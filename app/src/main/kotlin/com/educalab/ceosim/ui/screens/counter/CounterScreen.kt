@@ -72,26 +72,30 @@ fun CounterScreen(viewModel: CeoSimViewModel, onBack: () -> Unit) {
                 return@Column
             }
 
-            AnimatedContent(targetState = seed, label = "customer") { _ ->
+            AnimatedContent(targetState = seed, label = "customer") { targetSeed ->
+                val animatedCustomer = remember(customers, targetSeed) { customers.randomOrNull() }
+                val animatedProduct = remember(shelves, targetSeed) { shelves.randomOrNull() }
+                if (animatedCustomer == null || animatedProduct == null) return@AnimatedContent
+
                 Card(shape = RoundedCornerShape(20.dp), elevation = CardDefaults.cardElevation(2.dp), modifier = Modifier.fillMaxWidth()) {
                     Column(modifier = Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                        CustomerIllustration(avatar = currentCustomer.avatar, size = 88.dp)
-                        Text(text = currentCustomer.name, style = MaterialTheme.typography.titleLarge)
-                        Text(text = currentCustomer.greeting, style = MaterialTheme.typography.bodyMedium)
+                        CustomerIllustration(avatar = animatedCustomer.avatar, size = 88.dp)
+                        Text(text = animatedCustomer.name, style = MaterialTheme.typography.titleLarge)
+                        Text(text = animatedCustomer.greeting, style = MaterialTheme.typography.bodyMedium)
 
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(top = 16.dp)
                         ) {
-                            ProductIllustration(category = requestedProduct.product.category, size = 40.dp)
+                            ProductIllustration(category = animatedProduct.product.category, size = 40.dp)
                             Text(
-                                text = "Quiero: ${requestedProduct.product.name}",
+                                text = "Quiero: ${animatedProduct.product.name}",
                                 style = MaterialTheme.typography.titleMedium,
                                 modifier = Modifier.padding(start = 8.dp)
                             )
                         }
                         Text(
-                            text = "Stock disponible: ${requestedProduct.quantity}",
+                            text = "Stock disponible: ${animatedProduct.quantity}",
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
