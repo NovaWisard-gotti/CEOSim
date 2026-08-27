@@ -35,6 +35,19 @@ import com.educalab.ceosim.ui.CeoSimViewModel
 import com.educalab.ceosim.ui.components.BalanceChip
 import com.educalab.ceosim.ui.illustrations.CustomerIllustration
 import com.educalab.ceosim.ui.illustrations.ProductIllustration
+import kotlin.random.Random
+
+/**
+ * Sorteo determinista: la misma [seed] siempre elige el mismo elemento.
+ * Así el cliente/producto que se muestra (que depende del target state de
+ * [androidx.compose.animation.AnimatedContent]) y el que usan el texto de
+ * stock y el botón de abajo (que dependen del seed actual) nunca se
+ * desincronizan, aunque se calculen en dos lugares distintos.
+ */
+private fun <T> List<T>.pickForSeed(seed: Int): T? {
+    if (isEmpty()) return null
+    return this[Random(seed).nextInt(size)]
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,15 +57,11 @@ fun CounterScreen(viewModel: CeoSimViewModel, onBack: () -> Unit) {
     val customers by viewModel.customers.collectAsState()
 
     var seed by remember { mutableStateOf(0) }
-    // Un único sorteo por seed, reutilizado en todo el mostrador: si se
-    // sortean por separado el cliente/producto que se muestran y los que
-    // usa el botón, pueden no coincidir y el botón queda desincronizado
-    // del stock que el usuario ve en pantalla.
-    val currentCustomer = remember(customers, seed) { customers.randomOrNull() }
+    val currentCustomer = remember(customers, seed) { customers.pickForSeed(seed) }
     val requestedProduct = remember(shelves, seed) {
         // Preferimos pedir algo que sí exista en el catálogo; a veces el
         // cliente pedirá algo agotado, lo cual es intencional (Módulo 7).
-        shelves.randomOrNull()
+        shelves.pickForSeed(seed * 31 + 17)
     }
 
     Scaffold(
@@ -76,32 +85,38 @@ fun CounterScreen(viewModel: CeoSimViewModel, onBack: () -> Unit) {
                 return@Column
             }
 
-            AnimatedContent(targetState = seed, label = "customer") {
-                // Mismo cliente/producto que usan el texto de stock y el
-                // botón de abajo: nada de sortear de nuevo aquí.
+            AnimatedContent(targetState = seed, label = "customer") { targetSeed ->
+                // Se recalcula con el mismo sorteo determinista que usan el
+                // texto de stock y el botón de abajo (pickForSeed), así el
+                // contenido animado nunca muestra un cliente/producto
+                // distinto al que el botón realmente va a vender.
+                val cardCustomer = customers.pickForSeed(targetSeed)
+                val cardProduct = shelves.pickForSeed(targetSeed * 31 + 17)
+                if (cardCustomer == null || cardProduct == null) return@AnimatedContent
+
                 Card(shape = RoundedCornerShape(20.dp), elevation = CardDefaults.cardElevation(2.dp), modifier = Modifier.fillMaxWidth()) {
                     Column(modifier = Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                        CustomerIllustration(avatar = currentCustomer.avatar, size = 88.dp)
-                        Text(text = currentCustomer.name, style = MaterialTheme.typography.titleLarge)
-                        Text(text = currentCustomer.greeting, style = MaterialTheme.typography.bodyMedium)
+                        CustomerIllustration(avatar = cardCustomer.avatar, size = 88.dp)
+                        Text(text = cardCustomer.name, style = MaterialTheme.typography.titleLarge)
+                        Text(text = cardCustomer.greeting, style = MaterialTheme.typography.bodyMedium)
 
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(top = 16.dp)
                         ) {
                             ProductIllustration(
-                                category = requestedProduct.product.category,
-                                productId = requestedProduct.product.id,
+                                category = cardProduct.product.category,
+                                productId = cardProduct.product.id,
                                 size = 40.dp
                             )
                             Text(
-                                text = "Quiero: ${requestedProduct.product.name}",
+                                text = "Quiero: ${cardProduct.product.name}",
                                 style = MaterialTheme.typography.titleMedium,
                                 modifier = Modifier.padding(start = 8.dp)
                             )
                         }
                         Text(
-                            text = "Stock disponible: ${requestedProduct.quantity}",
+                            text = "Stock disponible: ${cardProduct.quantity}",
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
