@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.CEOSim" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/shop_orange</item>
+        <item name="android:windowBackground">@color/shop_cream</item>
+        <item name="android:textColorPrimary">@color/ink_dark</item>
+    </style>
+</resources>

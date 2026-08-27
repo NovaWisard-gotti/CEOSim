@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Toldo -->
+    <path android:fillColor="#FFF6EA" android:pathData="M24,40 L84,40 L84,58 L24,58 Z" />
+    <path android:fillColor="#E06A1F" android:pathData="M24,40 L34,40 L29,50 Z" />
+    <path android:fillColor="#E06A1F" android:pathData="M44,40 L54,40 L49,50 Z" />
+    <path android:fillColor="#E06A1F" android:pathData="M64,40 L74,40 L69,50 Z" />
+    <!-- Cuerpo de la tienda -->
+    <path android:fillColor="#FFFFFF" android:pathData="M28,58 L80,58 L80,86 L28,86 Z" />
+    <!-- Puerta -->
+    <path android:fillColor="#7A5230" android:pathData="M47,68 L61,68 L61,86 L47,86 Z" />
+    <!-- Moneda -->
+    <path android:fillColor="#FFD54F" android:pathData="M78,24 m-10,0 a10,10 0 1,0 20,0 a10,10 0 1,0 -20,0" />
+    <path android:fillColor="#E0A800" android:pathData="M78,24 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0" />
+</vector>
