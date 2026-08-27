@@ -1,115 +1,66 @@
 package com.educalab.ceosim.ui.illustrations
 
-import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.educalab.ceosim.domain.model.ProductCategory
-import com.educalab.ceosim.ui.theme.InkDark
-import com.educalab.ceosim.ui.theme.ShopBlue
-import com.educalab.ceosim.ui.theme.ShopBrown
-import com.educalab.ceosim.ui.theme.ShopGreen
-import com.educalab.ceosim.ui.theme.ShopGreenDark
-import com.educalab.ceosim.ui.theme.ShopOrange
-import com.educalab.ceosim.ui.theme.ShopPurple
-import com.educalab.ceosim.ui.theme.ShopRed
-import com.educalab.ceosim.ui.theme.ShopWood
-import com.educalab.ceosim.ui.theme.ShopYellow
+
+/** Emoji por categoría, usado cuando no conocemos el producto exacto (p. ej. iconos de módulo). */
+private val categoryEmoji: Map<ProductCategory, String> = mapOf(
+    ProductCategory.BEBIDA to "🧃",
+    ProductCategory.FRUTA to "🍎",
+    ProductCategory.PAPELERIA to "📓",
+    ProductCategory.JUGUETE to "🧸",
+    ProductCategory.GALLETA to "🍪",
+    ProductCategory.PLANTA to "🪴",
+    ProductCategory.DEPORTE to "⚽",
+    ProductCategory.LIBRO to "📖"
+)
+
+/** Emoji específico por producto, más preciso que el de categoría (p. ej. distingue pelota de trompo). */
+private val productEmoji: Map<String, String> = mapOf(
+    "jugo_naranja" to "🧃",
+    "jugo_manzana" to "🧃",
+    "agua_fresca" to "💧",
+    "manzana_roja" to "🍎",
+    "platano" to "🍌",
+    "naranja_fruta" to "🍊",
+    "cuaderno_rayado" to "📓",
+    "lapiz_grafito" to "✏️",
+    "goma_borrar" to "🧼",
+    "colores_caja" to "🖍️",
+    "pelota_futbol" to "⚽",
+    "trompo_madera" to "🪀",
+    "carrito_juguete" to "🚗",
+    "galleta_avena" to "🍪",
+    "galleta_chocolate" to "🍫",
+    "planta_maceta" to "🪴",
+    "cactus_mini" to "🌵",
+    "cuerda_saltar" to "🪢",
+    "gorra_deportiva" to "🧢",
+    "libro_cuentos" to "📖"
+)
 
 /**
- * Ilustración de producto según su categoría. Todas comparten un mismo
- * estilo geométrico plano para mantener coherencia visual (sección 32).
+ * Ilustración de producto: un emoji congruente con el producto real.
+ * Si se conoce el [productId] se usa un emoji específico; si no, se cae
+ * al emoji genérico de la [category] (por ejemplo, para iconos de módulo).
  */
 @Composable
-fun ProductIllustration(category: ProductCategory, modifier: Modifier = Modifier, size: Dp = 56.dp) {
-    Canvas(modifier = modifier.size(size)) {
-        val w = this.size.width
-        val h = this.size.height
-        when (category) {
-            ProductCategory.BEBIDA -> {
-                val cupPath = Path().apply {
-                    moveTo(w * 0.30f, h * 0.25f)
-                    lineTo(w * 0.70f, h * 0.25f)
-                    lineTo(w * 0.62f, h * 0.85f)
-                    lineTo(w * 0.38f, h * 0.85f)
-                    close()
-                }
-                drawPath(cupPath, color = ShopBlue)
-                drawRect(color = InkDark, topLeft = Offset(w * 0.28f, h * 0.20f), size = Size(w * 0.44f, h * 0.06f))
-                drawLine(InkDark, Offset(w * 0.5f, h * 0.05f), Offset(w * 0.5f, h * 0.22f), strokeWidth = w * 0.04f)
-            }
-            ProductCategory.FRUTA -> {
-                drawCircle(color = ShopRed, radius = w * 0.32f, center = Offset(w * 0.5f, h * 0.58f))
-                drawLine(ShopGreenDark, Offset(w * 0.5f, h * 0.26f), Offset(w * 0.56f, h * 0.14f), strokeWidth = w * 0.04f)
-                drawOval(color = ShopGreen, topLeft = Offset(w * 0.54f, h * 0.10f), size = Size(w * 0.20f, w * 0.12f))
-            }
-            ProductCategory.PAPELERIA -> {
-                drawRoundRect(
-                    color = ShopYellow,
-                    topLeft = Offset(w * 0.24f, h * 0.16f),
-                    size = Size(w * 0.52f, h * 0.68f),
-                    cornerRadius = CornerRadius(w * 0.04f, w * 0.04f)
-                )
-                repeat(3) { i ->
-                    drawLine(
-                        InkDark,
-                        Offset(w * 0.30f, h * (0.34f + i * 0.14f)),
-                        Offset(w * 0.70f, h * (0.34f + i * 0.14f)),
-                        strokeWidth = w * 0.015f
-                    )
-                }
-            }
-            ProductCategory.JUGUETE -> {
-                drawCircle(color = ShopPurple, radius = w * 0.32f, center = Offset(w * 0.5f, h * 0.5f))
-                drawArc(
-                    color = ShopOrange,
-                    startAngle = -20f,
-                    sweepAngle = 90f,
-                    useCenter = false,
-                    topLeft = Offset(w * 0.18f, h * 0.18f),
-                    size = Size(w * 0.64f, h * 0.64f),
-                    style = Stroke(width = w * 0.05f)
-                )
-            }
-            ProductCategory.GALLETA -> {
-                drawCircle(color = ShopWood, radius = w * 0.32f, center = Offset(w * 0.5f, h * 0.5f))
-                val dots = listOf(0.38f to 0.40f, 0.60f to 0.42f, 0.46f to 0.58f, 0.58f to 0.62f, 0.40f to 0.60f)
-                dots.forEach { (dx, dy) ->
-                    drawCircle(color = InkDark, radius = w * 0.035f, center = Offset(w * dx, h * dy))
-                }
-            }
-            ProductCategory.PLANTA -> {
-                drawRoundRect(
-                    color = ShopBrown,
-                    topLeft = Offset(w * 0.34f, h * 0.62f),
-                    size = Size(w * 0.32f, h * 0.26f),
-                    cornerRadius = CornerRadius(w * 0.03f, w * 0.03f)
-                )
-                drawOval(color = ShopGreen, topLeft = Offset(w * 0.30f, h * 0.24f), size = Size(w * 0.20f, h * 0.34f))
-                drawOval(color = ShopGreenDark, topLeft = Offset(w * 0.50f, h * 0.18f), size = Size(w * 0.20f, h * 0.36f))
-            }
-            ProductCategory.DEPORTE -> {
-                drawCircle(color = ShopOrange, radius = w * 0.30f, center = Offset(w * 0.5f, h * 0.5f))
-                drawArc(InkDark, 0f, 360f, false, Offset(w * 0.20f, h * 0.20f), Size(w * 0.60f, h * 0.60f), style = Stroke(width = w * 0.015f))
-                drawLine(InkDark, Offset(w * 0.5f, h * 0.20f), Offset(w * 0.5f, h * 0.80f), strokeWidth = w * 0.015f)
-                drawLine(InkDark, Offset(w * 0.20f, h * 0.5f), Offset(w * 0.80f, h * 0.5f), strokeWidth = w * 0.015f)
-            }
-            ProductCategory.LIBRO -> {
-                drawRoundRect(
-                    color = ShopBlue,
-                    topLeft = Offset(w * 0.20f, h * 0.20f),
-                    size = Size(w * 0.60f, h * 0.62f),
-                    cornerRadius = CornerRadius(w * 0.03f, w * 0.03f)
-                )
-                drawLine(ShopYellow, Offset(w * 0.5f, h * 0.20f), Offset(w * 0.5f, h * 0.82f), strokeWidth = w * 0.03f)
-            }
-        }
+fun ProductIllustration(
+    category: ProductCategory,
+    modifier: Modifier = Modifier,
+    size: Dp = 56.dp,
+    productId: String? = null
+) {
+    val emoji = productId?.let { productEmoji[it] } ?: categoryEmoji[category] ?: "🛍️"
+    Box(modifier = modifier.size(size), contentAlignment = Alignment.Center) {
+        Text(text = emoji, fontSize = (size.value * 0.55f).sp)
     }
 }

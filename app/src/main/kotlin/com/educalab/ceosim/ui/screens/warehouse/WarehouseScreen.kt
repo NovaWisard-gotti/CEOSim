@@ -69,7 +69,11 @@ fun WarehouseScreen(viewModel: CeoSimViewModel, onBack: () -> Unit) {
                 val qty = quantities[item.product.id] ?: 1
                 Card(shape = RoundedCornerShape(18.dp), elevation = CardDefaults.cardElevation(1.dp)) {
                     Column(modifier = Modifier.padding(12.dp)) {
-                        ProductIllustration(category = item.product.category, modifier = Modifier.fillMaxWidth())
+                        ProductIllustration(
+                            category = item.product.category,
+                            productId = item.product.id,
+                            modifier = Modifier.fillMaxWidth()
+                        )
                         Text(text = item.product.name, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 6.dp))
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             CoinIcon(size = 14.dp)

@@ -44,6 +44,10 @@ fun CounterScreen(viewModel: CeoSimViewModel, onBack: () -> Unit) {
     val customers by viewModel.customers.collectAsState()
 
     var seed by remember { mutableStateOf(0) }
+    // Un único sorteo por seed, reutilizado en todo el mostrador: si se
+    // sortean por separado el cliente/producto que se muestran y los que
+    // usa el botón, pueden no coincidir y el botón queda desincronizado
+    // del stock que el usuario ve en pantalla.
     val currentCustomer = remember(customers, seed) { customers.randomOrNull() }
     val requestedProduct = remember(shelves, seed) {
         // Preferimos pedir algo que sí exista en el catálogo; a veces el
@@ -72,30 +76,32 @@ fun CounterScreen(viewModel: CeoSimViewModel, onBack: () -> Unit) {
                 return@Column
             }
 
-            AnimatedContent(targetState = seed, label = "customer") { targetSeed ->
-                val animatedCustomer = remember(customers, targetSeed) { customers.randomOrNull() }
-                val animatedProduct = remember(shelves, targetSeed) { shelves.randomOrNull() }
-                if (animatedCustomer == null || animatedProduct == null) return@AnimatedContent
-
+            AnimatedContent(targetState = seed, label = "customer") {
+                // Mismo cliente/producto que usan el texto de stock y el
+                // botón de abajo: nada de sortear de nuevo aquí.
                 Card(shape = RoundedCornerShape(20.dp), elevation = CardDefaults.cardElevation(2.dp), modifier = Modifier.fillMaxWidth()) {
                     Column(modifier = Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                        CustomerIllustration(avatar = animatedCustomer.avatar, size = 88.dp)
-                        Text(text = animatedCustomer.name, style = MaterialTheme.typography.titleLarge)
-                        Text(text = animatedCustomer.greeting, style = MaterialTheme.typography.bodyMedium)
+                        CustomerIllustration(avatar = currentCustomer.avatar, size = 88.dp)
+                        Text(text = currentCustomer.name, style = MaterialTheme.typography.titleLarge)
+                        Text(text = currentCustomer.greeting, style = MaterialTheme.typography.bodyMedium)
 
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(top = 16.dp)
                         ) {
-                            ProductIllustration(category = animatedProduct.product.category, size = 40.dp)
+                            ProductIllustration(
+                                category = requestedProduct.product.category,
+                                productId = requestedProduct.product.id,
+                                size = 40.dp
+                            )
                             Text(
-                                text = "Quiero: ${animatedProduct.product.name}",
+                                text = "Quiero: ${requestedProduct.product.name}",
                                 style = MaterialTheme.typography.titleMedium,
                                 modifier = Modifier.padding(start = 8.dp)
                             )
                         }
                         Text(
-                            text = "Stock disponible: ${animatedProduct.quantity}",
+                            text = "Stock disponible: ${requestedProduct.quantity}",
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }

@@ -120,7 +120,11 @@ fun InventoryScreen(viewModel: CeoSimViewModel, onBack: () -> Unit) {
                                 }
                         ) {
                             Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                                ProductIllustration(category = item.product.category, size = 48.dp)
+                                ProductIllustration(
+                                    category = item.product.category,
+                                    productId = item.product.id,
+                                    size = 48.dp
+                                )
                                 Column(modifier = Modifier.padding(start = 12.dp).weight(1f)) {
                                     Text(text = item.product.name, style = MaterialTheme.typography.titleMedium)
                                     Text(text = "Cantidad: ${item.quantity}", style = MaterialTheme.typography.bodyMedium)

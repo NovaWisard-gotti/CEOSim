@@ -35,18 +35,24 @@ fun StoreFrontIllustration(modifier: Modifier = Modifier) {
         // Cielo
         drawRect(color = ShopBlue.copy(alpha = 0.18f), topLeft = Offset.Zero, size = Size(w, h * 0.55f))
 
+        // Sol y nubes, para que la escena se sienta más cálida y amigable
+        drawCircle(color = ShopYellow.copy(alpha = 0.9f), radius = w * 0.06f, center = Offset(w * 0.88f, h * 0.14f))
+        listOf(0.06f to 0.10f, 0.13f to 0.10f, 0.095f to 0.075f).forEach { (dx, dy) ->
+            drawCircle(color = ShopCream, radius = w * 0.045f, center = Offset(w * dx, h * dy))
+        }
+
         // Suelo
         drawRect(color = ShopWood.copy(alpha = 0.35f), topLeft = Offset(0f, h * 0.85f), size = Size(w, h * 0.15f))
 
-        // Cuerpo de la tienda
+        // Cuerpo de la tienda, con esquinas bien redondeadas
         drawRoundRect(
             color = ShopCream,
             topLeft = Offset(w * 0.10f, h * 0.42f),
             size = Size(w * 0.80f, h * 0.46f),
-            cornerRadius = CornerRadius(12f, 12f)
+            cornerRadius = CornerRadius(w * 0.05f, w * 0.05f)
         )
 
-        // Toldo a rayas
+        // Toldo a rayas, con borde inferior en forma de olas (más acogedor que triángulos)
         val stripes = 7
         val stripeWidth = (w * 0.86f) / stripes
         for (i in 0 until stripes) {
@@ -58,29 +64,63 @@ fun StoreFrontIllustration(modifier: Modifier = Modifier) {
         }
         val awningEdge = Path().apply {
             moveTo(w * 0.07f, h * 0.44f)
-            for (i in 0..stripes) {
+            for (i in 0 until stripes) {
                 val x = w * 0.07f + i * stripeWidth
-                lineTo(x, h * 0.44f)
-                lineTo(x + stripeWidth / 2, h * 0.49f)
+                arcTo(
+                    rect = androidx.compose.ui.geometry.Rect(
+                        Offset(x, h * 0.44f),
+                        Offset(x + stripeWidth, h * 0.51f)
+                    ),
+                    startAngleDegrees = 180f,
+                    sweepAngleDegrees = -180f,
+                    forceMoveTo = false
+                )
             }
         }
         drawPath(awningEdge, color = ShopOrangeDark)
 
-        // Puerta
+        // Puerta con perilla
         drawRoundRect(
             color = ShopBrown,
             topLeft = Offset(w * 0.44f, h * 0.62f),
             size = Size(w * 0.14f, h * 0.26f),
-            cornerRadius = CornerRadius(8f, 8f)
+            cornerRadius = CornerRadius(w * 0.03f, w * 0.03f)
         )
+        drawCircle(color = ShopYellow, radius = w * 0.012f, center = Offset(w * 0.55f, h * 0.76f))
 
-        // Ventanas
-        drawRoundRect(color = ShopBlue.copy(alpha = 0.55f), topLeft = Offset(w * 0.18f, h * 0.55f), size = Size(w * 0.16f, h * 0.16f), cornerRadius = CornerRadius(6f, 6f))
-        drawRoundRect(color = ShopBlue.copy(alpha = 0.55f), topLeft = Offset(w * 0.66f, h * 0.55f), size = Size(w * 0.16f, h * 0.16f), cornerRadius = CornerRadius(6f, 6f))
+        // Ventanas redondeadas con jardineras de flores
+        listOf(w * 0.18f, w * 0.66f).forEach { x ->
+            drawRoundRect(
+                color = ShopBlue.copy(alpha = 0.55f),
+                topLeft = Offset(x, h * 0.55f),
+                size = Size(w * 0.16f, h * 0.16f),
+                cornerRadius = CornerRadius(w * 0.03f, w * 0.03f)
+            )
+            drawRoundRect(
+                color = ShopBrown,
+                topLeft = Offset(x - w * 0.01f, h * 0.71f),
+                size = Size(w * 0.18f, h * 0.025f),
+                cornerRadius = CornerRadius(w * 0.01f, w * 0.01f)
+            )
+            listOf(0.02f, 0.09f, 0.16f).forEach { dx ->
+                drawCircle(color = ShopRed, radius = w * 0.015f, center = Offset(x + dx * w, h * 0.705f))
+            }
+        }
 
         // Cartel con el nombre
-        drawRoundRect(color = ShopGreen, topLeft = Offset(w * 0.30f, h * 0.18f), size = Size(w * 0.40f, h * 0.12f), cornerRadius = CornerRadius(10f, 10f))
-        drawRoundRect(color = ShopGreenDark, topLeft = Offset(w * 0.30f, h * 0.18f), size = Size(w * 0.40f, h * 0.12f), cornerRadius = CornerRadius(10f, 10f), style = androidx.compose.ui.graphics.drawscope.Stroke(width = 3f))
+        drawRoundRect(
+            color = ShopGreen,
+            topLeft = Offset(w * 0.30f, h * 0.18f),
+            size = Size(w * 0.40f, h * 0.12f),
+            cornerRadius = CornerRadius(w * 0.04f, w * 0.04f)
+        )
+        drawRoundRect(
+            color = ShopGreenDark,
+            topLeft = Offset(w * 0.30f, h * 0.18f),
+            size = Size(w * 0.40f, h * 0.12f),
+            cornerRadius = CornerRadius(w * 0.04f, w * 0.04f),
+            style = androidx.compose.ui.graphics.drawscope.Stroke(width = 3f)
+        )
 
         // Monedas decorativas flotando
         drawCircle(color = CoinGold, radius = w * 0.025f, center = Offset(w * 0.86f, h * 0.20f))
