@@ -95,7 +95,10 @@ fun CounterScreen(viewModel: CeoSimViewModel, onBack: () -> Unit) {
                 if (cardCustomer == null || cardProduct == null) return@AnimatedContent
 
                 Card(shape = RoundedCornerShape(20.dp), elevation = CardDefaults.cardElevation(2.dp), modifier = Modifier.fillMaxWidth()) {
-                    Column(modifier = Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth().padding(20.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
                         CustomerIllustration(avatar = cardCustomer.avatar, size = 88.dp)
                         Text(text = cardCustomer.name, style = MaterialTheme.typography.titleLarge)
                         Text(text = cardCustomer.greeting, style = MaterialTheme.typography.bodyMedium)

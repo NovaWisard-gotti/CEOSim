@@ -62,14 +62,20 @@ fun StoreFrontIllustration(modifier: Modifier = Modifier) {
                 size = Size(stripeWidth, h * 0.14f)
             )
         }
+        // Cada arco debe empezar exactamente donde termina el anterior (ambos
+        // extremos a la altura de yTop); si el óvalo no queda centrado en esa
+        // línea de base, el punto de inicio del arco no coincide con el punto
+        // final del anterior y el borde sale torcido en zigzag.
+        val yTop = h * 0.44f
+        val scallopDepth = h * 0.045f
         val awningEdge = Path().apply {
-            moveTo(w * 0.07f, h * 0.44f)
+            moveTo(w * 0.07f, yTop)
             for (i in 0 until stripes) {
                 val x = w * 0.07f + i * stripeWidth
                 arcTo(
                     rect = androidx.compose.ui.geometry.Rect(
-                        Offset(x, h * 0.44f),
-                        Offset(x + stripeWidth, h * 0.51f)
+                        Offset(x, yTop - scallopDepth),
+                        Offset(x + stripeWidth, yTop + scallopDepth)
                     ),
                     startAngleDegrees = 180f,
                     sweepAngleDegrees = -180f,

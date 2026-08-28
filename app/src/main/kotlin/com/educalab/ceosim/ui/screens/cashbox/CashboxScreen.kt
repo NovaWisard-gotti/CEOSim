@@ -52,7 +52,10 @@ fun CashboxScreen(viewModel: CeoSimViewModel, onBack: () -> Unit) {
     ) { padding: PaddingValues ->
         Column(modifier = Modifier.fillMaxSize().padding(padding).padding(16.dp)) {
             Card(shape = RoundedCornerShape(20.dp), elevation = CardDefaults.cardElevation(2.dp), modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         CoinIcon(size = 36.dp)
                         Text(text = " ${header.balance}", style = MaterialTheme.typography.displayMedium)
